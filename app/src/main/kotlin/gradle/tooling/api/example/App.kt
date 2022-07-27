@@ -8,18 +8,22 @@ import org.gradle.tooling.IntermediateResultHandler
 import org.jetbrains.plugins.gradle.model.ProjectImportAction
 import kotlin.io.path.Path
 
-fun main() {
-    val path = Path("/Users/rogerh/Development/workflow-kotlin")
+fun main(args: Array<String>) {
+    if (args.size == 0) {
+        println("Specify a path of the repository running the Gradle daemon")
+        System.exit(1)
+    }
+    val path = Path(args.get(0))
     val controller = GradleConnector.newConnector().forProjectDirectory(path.toFile()).connect().use { connection ->
         val buildAction = ProjectImportAction(false, false)
         buildAction.setParallelModelsFetch(true)
         connection.action().buildFinished(buildAction, IntermediateResultHandler<ProjectImportAction.AllModels>() {
-            println("${it.performanceTrace.toString()}")
+            println("Parallel on: ${it.performanceTrace.toString()}")
         }).build().run()
 
         buildAction.setParallelModelsFetch(false)
         connection.action().buildFinished(buildAction, IntermediateResultHandler<ProjectImportAction.AllModels>() {
-            println("${it.performanceTrace.toString()}")
+            println("Paralell off: ${it.performanceTrace.toString()}")
         }).build().run()
     }
 }
