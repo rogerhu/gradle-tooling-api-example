@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
 
         buildAction.setParallelModelsFetch(false)
         connection.action().buildFinished(buildAction, IntermediateResultHandler<ProjectImportAction.AllModels>() {
-            println("Paralell off: ${it.performanceTrace.toString()}")
+            println("Parallel off: ${it.performanceTrace.toString()}")
         }).build().run()
     }
 }
